@@ -9,7 +9,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-#include <frc/util/color.h>
+#include <frc/util/Color.h>
 #include <rev/ColorSensorV3.h>
 #include <rev/ColorMatch.h>
 
@@ -19,6 +19,11 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+  //added this 1/15/20, might make the shuffleboard display color, not tested yet
+  m_colorMatcher.AddColorMatch(kBlueTarget);
+  m_colorMatcher.AddColorMatch(kGreenTarget);
+  m_colorMatcher.AddColorMatch(kRedTarget);
+  m_colorMatcher.AddColorMatch(kYellowTarget);
 }
 
 void Robot::DisabledInit() {
