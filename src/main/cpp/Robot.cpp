@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <frc/util/Color.h>
@@ -15,7 +16,12 @@
 
 #include "Robot.h"
 
+clock_t check_time;
+float interval = 0.0625; //not seconds; seems to be interval * 4 = seconds
+
+
 void Robot::RobotInit() {
+  Ticks = 0;
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -24,7 +30,10 @@ void Robot::RobotInit() {
   m_colorMatcher.AddColorMatch(kGreenTarget);
   m_colorMatcher.AddColorMatch(kRedTarget);
   m_colorMatcher.AddColorMatch(kYellowTarget);
-}
+  PreviousColor = "Black"; //Arbitrary value
+  std::cout << clock();
+  frc::SmartDashboard::PutBoolean("Tick Reset", TickReset);
+}  
 
 void Robot::DisabledInit() {
   // SHUT UP!!
@@ -76,7 +85,6 @@ void Robot::RobotPeriodic() {
       colorString = "Unknown";
     }
     /* */
-      
     /**
      * Open Smart Dashboard or Shuffleboard to see the color detected by the 
      * sensor.
@@ -91,7 +99,42 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("Matched R", matchedColor.red);
     frc::SmartDashboard::PutNumber("Matched G", matchedColor.green);
     frc::SmartDashboard::PutNumber("Matched B", matchedColor.blue);
-    /* */
+
+    float elapsed_time = float(clock() - check_time) / float(CLOCKS_PER_SEC);
+
+    if (elapsed_time > interval) {
+      std::cout << "Time: ";
+      std::cout << (float(clock()) / float(CLOCKS_PER_SEC));
+      std::cout << "\n";
+      check_time = clock();
+
+        if (Ticks < 29) {
+        CurrentColor = colorString;
+        SpinnyBoi.Set(0.1);
+
+          if (CurrentColor != PreviousColor) {
+            PreviousColor = CurrentColor;
+            Ticks += 1;
+          }
+
+      } else if (TickReset && frc::SmartDashboard::GetBoolean("Tick Reset", TickReset)) {
+        Ticks = 1;
+
+      } else {
+        SpinnyBoi.Set(0);
+      } 
+    } 
+    
+ 
+
+  
+    //counts how many times the color changes, then when it reaches 29 ticks, stops the SpinnyBoi
+    
+    frc::SmartDashboard::PutNumber("Ticks", (Ticks-1));
+    frc::SmartDashboard::PutNumber("Rotations", (Ticks-1) / 8);
+    frc::SmartDashboard::GetBoolean("Reset Ticks", TickReset);
+    //frc::SmartDashboard::PutData("Reset Ticks", new ticksReset());
+
 }
 
 /**

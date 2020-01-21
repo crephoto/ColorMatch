@@ -8,7 +8,9 @@
 #pragma once
 
 #include <string>
+#include <time.h>
 
+#include <rev/CANSparkMax.h>
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
@@ -35,6 +37,7 @@ rev::ColorSensorV3 m_colorSensor{i2cPort};
    * with given confidence range.
    */
   rev::ColorMatch m_colorMatcher;
+  rev::CANSparkMax SpinnyBoi{1, rev::CANSparkMax::MotorType::kBrushless};
 
   /**
    * Note: Any example colors should be calibrated as the user needs, these
@@ -54,6 +57,7 @@ rev::ColorSensorV3 m_colorSensor{i2cPort};
   static constexpr frc::Color kRedTarget = frc::Color(0.523, 0.343, 0.130);
   static constexpr frc::Color kYellowTarget = frc::Color(0.320, 0.559, 0.120);
  public:
+ 
   void RobotInit() override;
   void RobotPeriodic() override;
   void AutonomousInit() override;
@@ -68,5 +72,9 @@ rev::ColorSensorV3 m_colorSensor{i2cPort};
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
+  bool TickReset = false; //resets ticks when reaches 29 ticks
   std::string m_autoSelected;
+  int Ticks; //Starts at 1
+  std::string PreviousColor;
+  std::string CurrentColor;
 };
