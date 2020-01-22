@@ -32,7 +32,6 @@ void Robot::RobotInit() {
   m_colorMatcher.AddColorMatch(kYellowTarget);
   PreviousColor = "Black"; //Arbitrary value
   std::cout << clock();
-  frc::SmartDashboard::PutBoolean("Tick Reset", TickReset);
 }  
 
 void Robot::DisabledInit() {
@@ -99,6 +98,8 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("Matched R", matchedColor.red);
     frc::SmartDashboard::PutNumber("Matched G", matchedColor.green);
     frc::SmartDashboard::PutNumber("Matched B", matchedColor.blue);
+    TickReset = frc::SmartDashboard::GetBoolean("Tick Reset", TickReset);
+    frc::SmartDashboard::PutBoolean("Tick Reset", TickReset);
 
     float elapsed_time = float(clock() - check_time) / float(CLOCKS_PER_SEC);
 
@@ -133,7 +134,7 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("Ticks", (Ticks-1));
     frc::SmartDashboard::PutNumber("Rotations", (Ticks-1) / 8);
     frc::SmartDashboard::GetBoolean("Reset Ticks", TickReset);
-    //frc::SmartDashboard::PutData("Reset Ticks", new ticksReset());
+    //frc::SmartDashboard::PutData("Reset Ticks", new TicksReset);
 
 }
 
